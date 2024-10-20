@@ -1,4 +1,4 @@
-Assessment - SDE II @ noon for Noon Minutes - submitted by Osama Khan
+Assessment - SDE II @ noon for Noon Minutes
 
 Screenshots
 
