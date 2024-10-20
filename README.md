@@ -1,4 +1,4 @@
-Assessment - SDE II @ noon for Noon Minutes
+Assessment - SDE II
 
 Screenshots
 
