@@ -4,6 +4,7 @@ import {
     EMPTY_CART,
     SET_PAYMENT_METHOD,
     CartActionTypes,
+    ADD_STARSHIPS_TO_CART,
 } from './actions';
 import { Starship } from '../types/starshipTypes';
 
@@ -18,7 +19,14 @@ const initialState: State = {
 };
 
 const rootReducer = (state = initialState, action: CartActionTypes): State => {
+
     switch (action.type) {
+        case ADD_STARSHIPS_TO_CART: {
+            return {
+                ...state,
+                cart: [...state.cart, action.payload],
+            };
+        }
         case ADD_TO_CART: {
             const existingCartItemIndex = state.cart.findIndex(
                 (cartItem) => cartItem.item.name === action.payload.name

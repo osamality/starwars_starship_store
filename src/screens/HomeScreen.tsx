@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useStarships} from '../hooks/useStarshipQuery';
-import {addToCart} from '../store/actions';
+import {addStarshipsToCart, addToCart} from '../store/actions';
 import {Starship} from '../types/starshipTypes';
 import {RootState} from '../store/store';
 import Header from '../components/Header';
@@ -58,10 +58,9 @@ const HomeScreen: React.FC = () => {
 
   // Add to Cart
   const handleAddToCart = (item: Starship) => {
+    console.log('item', item);
     if (quantities[item.name]) {
-      for (let i = 0; i < quantities[item.name]; i++) {
-        dispatch(addToCart(item));
-      }
+      dispatch(addStarshipsToCart({item, quantity: quantities[item.name]}));
       Toast.show({
         type: 'success',
         text1: 'Added to Cart',

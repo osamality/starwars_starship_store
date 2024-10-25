@@ -1,9 +1,15 @@
 import { Starship } from '../types/starshipTypes';
 
+export const ADD_STARSHIPS_TO_CART = 'ADD_STARSHIPS_TO_CART';
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const EMPTY_CART = 'EMPTY_CART';
 export const SET_PAYMENT_METHOD = 'SET_PAYMENT_METHOD';
+
+export interface AddStarshipsToCartAction {
+    type: typeof ADD_STARSHIPS_TO_CART;
+    payload: Starship[];
+}
 
 export interface AddToCartAction {
     type: typeof ADD_TO_CART;
@@ -24,7 +30,13 @@ export interface SetPaymentMethodAction {
     payload: string;
 }
 
-export type CartActionTypes = AddToCartAction | RemoveFromCartAction | EmptyCartAction | SetPaymentMethodAction;
+export type CartActionTypes = AddToCartAction | AddStarshipsToCartAction | RemoveFromCartAction | EmptyCartAction | SetPaymentMethodAction;
+
+export const addStarshipsToCart = (starships: Starship): AddStarshipsToCartAction => ({
+    type: ADD_STARSHIPS_TO_CART,
+    payload: starships,
+});
+
 
 export const addToCart = (starship: Starship): AddToCartAction => ({
     type: ADD_TO_CART,

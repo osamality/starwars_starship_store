@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, FlatList, StyleSheet, Alert} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState, AppDispatch} from '../store/store';
 import {emptyCart, setPaymentMethod} from '../store/actions';

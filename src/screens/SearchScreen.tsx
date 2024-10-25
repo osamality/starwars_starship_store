@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useSearchStarships} from '../hooks/useStarshipQuery';
@@ -11,16 +11,76 @@ import StarshipCard from '../components/StarshipCard';
 import LoadingComponent from '../components/LoadingComponent';
 import ErrorComponent from '../components/ErrorComponent';
 import CartIndicator from '../components/CartIndicator';
+import Toast from 'react-native-toast-message';
 
 const SearchScreen: React.FC = () => {
   const [query, setQuery] = useState('');
   const {data: searchResults, isLoading, error} = useSearchStarships(query);
   const dispatch = useDispatch<AppDispatch>();
   const cart = useSelector((state: RootState) => state.cart);
+  const [quantities, setQuantities] = useState<{[key: string]: number}>({});
+
+  // Set maximum quantity allowed per item
+  const MAX_QUANTITY = 5;
 
   const handleSearch = (text: string) => {
     setQuery(text);
   };
+
+  const handleIncreaseQuantity = (name: string) => {
+    setQuantities(prevQuantities => {
+      const currentQuantity = prevQuantities[name] || 0;
+      if (currentQuantity < MAX_QUANTITY) {
+        return {...prevQuantities, [name]: currentQuantity + 1};
+      } else {
+        Toast.show({
+          type: 'info',
+          text1: 'Max Quantity Reached',
+          text2: `You can only add up to ${MAX_QUANTITY} units of ${name}`,
+        });
+        return prevQuantities;
+      }
+    });
+  };
+
+  // Decrease Quantity
+  const handleDecreaseQuantity = (name: string) => {
+    setQuantities(prevQuantities => {
+      const currentQuantity = prevQuantities[name] || 0;
+      if (currentQuantity > 0) {
+        return {...prevQuantities, [name]: currentQuantity - 1};
+      }
+      return prevQuantities;
+    });
+  };
+
+  const handleAddToCart = (item: Starship) => {
+    if (quantities[item.name]) {
+      dispatch(addToCart(item, quantities[item.name]));
+      Toast.show({
+        type: 'success',
+        text1: 'Added to Cart',
+        text2: `${quantities[item.name]} units of ${item.name} added to cart.`,
+      });
+      setQuantities(prevQuantities => ({...prevQuantities, [item.name]: 0}));
+    } else {
+      Toast.show({
+        type: 'info',
+        text1: 'No Quantity Selected',
+        text2: `Please select a quantity to add ${item.name} to the cart.`,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (query.length > 0 && query.length <= 2) {
+      Toast.show({
+        type: 'info',
+        text1: 'Search Length',
+        text2: `Please type at least 3 characters to initiate search`,
+      });
+    }
+  }, [query]);
 
   return (
     <View style={styles.container}>
@@ -37,10 +97,10 @@ const SearchScreen: React.FC = () => {
           renderItem={({item}) => (
             <StarshipCard
               starship={item}
-              quantity={0}
-              onIncrease={() => {}}
-              onDecrease={() => {}}
-              onAddToCart={() => dispatch(addToCart(item))}
+              quantity={quantities[item.name] || 0}
+              onIncrease={() => handleIncreaseQuantity(item.name)}
+              onDecrease={() => handleDecreaseQuantity(item.name)}
+              onAddToCart={() => handleAddToCart(item)}
             />
           )}
           contentContainerStyle={styles.listContent}

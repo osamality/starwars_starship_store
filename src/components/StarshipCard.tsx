@@ -24,26 +24,53 @@ const StarshipCard: React.FC<StarshipCardProps> = ({
         style={styles.thumbnail}
       />
       <View style={styles.cardContent}>
-        <Text style={styles.starshipName}>{starship.name}</Text>
+        <Text style={styles.starshipName}>
+          {starship?.name ? starship.name : 'name not Availble'}
+        </Text>
         <Text style={styles.starshipCost}>
           Cost: {(parseFloat(starship.cost_in_credits) / 10000).toFixed(2)} AED
         </Text>
         <View style={styles.quantityControl}>
-          <TouchableOpacity style={styles.quantityButton} onPress={onDecrease}>
+          <TouchableOpacity
+            disabled={
+              starship?.cost_in_credits === undefined ||
+              starship?.cost_in_credits === null ||
+              Number.isNaN(parseFloat(starship.cost_in_credits))
+            }
+            style={styles.quantityButton}
+            onPress={onDecrease}>
             <Text style={styles.quantityButtonText}>-</Text>
           </TouchableOpacity>
           <Text style={styles.quantityText}>{quantity}</Text>
-          <TouchableOpacity style={styles.quantityButton} onPress={onIncrease}>
+          <TouchableOpacity
+            disabled={
+              starship?.cost_in_credits === undefined ||
+              starship?.cost_in_credits === null ||
+              Number.isNaN(parseFloat(starship.cost_in_credits))
+            }
+            style={styles.quantityButton}
+            onPress={onIncrease}>
             <Text style={styles.quantityButtonText}>+</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity
           style={[
             styles.addToCartButton,
-            quantity === 0 && styles.disabledButton,
+            (starship?.cost_in_credits === undefined ||
+              starship?.cost_in_credits === null ||
+              Number.isNaN(parseFloat(starship.cost_in_credits)) ||
+              quantity === 0) &&
+              styles.disabledButton,
           ]}
           onPress={onAddToCart}
-          disabled={quantity === 0}>
+          disabled={
+            starship?.cost_in_credits === undefined ||
+            starship?.cost_in_credits === null ||
+            Number.isNaN(parseFloat(starship.cost_in_credits)) ||
+            quantity === 0
+              ? true
+              : false
+          }>
           <Text style={styles.addToCartButtonText}>Add to Cart</Text>
         </TouchableOpacity>
       </View>
