@@ -19,17 +19,34 @@ const initialState: State = {
 };
 
 const rootReducer = (state = initialState, action: CartActionTypes): State => {
-
     switch (action.type) {
         case ADD_STARSHIPS_TO_CART: {
-            return {
-                ...state,
-                cart: [...state.cart, action.payload],
-            };
+            const existingCartItemIndex = state.cart.findIndex(
+                (cartItem) => cartItem.item.name === action.payload.item.name
+            );
+
+            if (existingCartItemIndex !== -1) {
+                // If item already exists in the cart, update the quantity
+                const updatedCart = [...state.cart];
+                updatedCart[existingCartItemIndex] = {
+                    ...updatedCart[existingCartItemIndex],
+                    quantity: updatedCart[existingCartItemIndex].quantity + action.payload.quantity,
+                };
+                return {
+                    ...state,
+                    cart: updatedCart,
+                };
+            } else {
+                // If item does not exist in the cart, add it with the provided quantity
+                return {
+                    ...state,
+                    cart: [...state.cart, { item: action.payload.item, quantity: action.payload.quantity }],
+                };
+            }
         }
         case ADD_TO_CART: {
             const existingCartItemIndex = state.cart.findIndex(
-                (cartItem) => cartItem.item.name === action.payload.name
+                (cartItem) => cartItem.item.name === action.payload.item.name
             );
 
             if (existingCartItemIndex !== -1) {
@@ -37,17 +54,17 @@ const rootReducer = (state = initialState, action: CartActionTypes): State => {
                 const updatedCart = [...state.cart];
                 updatedCart[existingCartItemIndex] = {
                     ...updatedCart[existingCartItemIndex],
-                    quantity: updatedCart[existingCartItemIndex].quantity + 1,
+                    quantity: updatedCart[existingCartItemIndex].quantity + action.payload.quantity,
                 };
                 return {
                     ...state,
                     cart: updatedCart,
                 };
             } else {
-                // If item does not exist in the cart, add it with quantity 1
+                // If item does not exist in the cart, add it with the provided quantity
                 return {
                     ...state,
-                    cart: [...state.cart, { item: action.payload, quantity: 1 }],
+                    cart: [...state.cart, { item: action.payload.item, quantity: action.payload.quantity }],
                 };
             }
         }

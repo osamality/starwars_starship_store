@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useStarships} from '../hooks/useStarshipQuery';
-import {addStarshipsToCart, addToCart} from '../store/actions';
+import {addStarshipsToCart} from '../store/actions';
 import {Starship} from '../types/starshipTypes';
 import {RootState} from '../store/store';
 import Header from '../components/Header';
@@ -58,14 +58,18 @@ const HomeScreen: React.FC = () => {
 
   // Add to Cart
   const handleAddToCart = (item: Starship) => {
-    console.log('item', item);
-    if (quantities[item.name]) {
-      dispatch(addStarshipsToCart({item, quantity: quantities[item.name]}));
+    const quantity = quantities[item.name]; // Get the quantity for the specific item
+
+    if (quantity && quantity > 0) {
+      // Dispatch the action with the correct payload (item and quantity)
+      dispatch(addStarshipsToCart(item, quantity));
       Toast.show({
         type: 'success',
         text1: 'Added to Cart',
-        text2: `${quantities[item.name]} units of ${item.name} added to cart.`,
+        text2: `${quantity} units of ${item.name} added to cart.`,
       });
+
+      // Reset the quantity for the item after adding to the cart
       setQuantities(prevQuantities => ({...prevQuantities, [item.name]: 0}));
     } else {
       Toast.show({

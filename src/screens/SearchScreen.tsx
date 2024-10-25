@@ -55,12 +55,13 @@ const SearchScreen: React.FC = () => {
   };
 
   const handleAddToCart = (item: Starship) => {
-    if (quantities[item.name]) {
-      dispatch(addToCart(item, quantities[item.name]));
+    const quantity = quantities[item.name];
+    if (quantity && quantity > 0) {
+      dispatch(addToCart(item, quantity));
       Toast.show({
         type: 'success',
         text1: 'Added to Cart',
-        text2: `${quantities[item.name]} units of ${item.name} added to cart.`,
+        text2: `${quantity} units of ${item.name} added to cart.`,
       });
       setQuantities(prevQuantities => ({...prevQuantities, [item.name]: 0}));
     } else {

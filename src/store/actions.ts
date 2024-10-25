@@ -8,12 +8,18 @@ export const SET_PAYMENT_METHOD = 'SET_PAYMENT_METHOD';
 
 export interface AddStarshipsToCartAction {
     type: typeof ADD_STARSHIPS_TO_CART;
-    payload: Starship[];
+    payload: {
+        item: Starship;
+        quantity: number;
+    };
 }
 
 export interface AddToCartAction {
     type: typeof ADD_TO_CART;
-    payload: Starship;
+    payload: {
+        item: Starship;
+        quantity: number;
+    };
 }
 
 export interface RemoveFromCartAction {
@@ -32,15 +38,20 @@ export interface SetPaymentMethodAction {
 
 export type CartActionTypes = AddToCartAction | AddStarshipsToCartAction | RemoveFromCartAction | EmptyCartAction | SetPaymentMethodAction;
 
-export const addStarshipsToCart = (starships: Starship): AddStarshipsToCartAction => ({
+export const addStarshipsToCart = (item: Starship, quantity: number): AddStarshipsToCartAction => ({
     type: ADD_STARSHIPS_TO_CART,
-    payload: starships,
+    payload: {
+        item,
+        quantity,
+    },
 });
 
-
-export const addToCart = (starship: Starship): AddToCartAction => ({
+export const addToCart = (item: Starship, quantity: number): AddToCartAction => ({
     type: ADD_TO_CART,
-    payload: starship,
+    payload: {
+        item,
+        quantity,
+    },
 });
 
 export const removeFromCart = (starship: Starship): RemoveFromCartAction => ({
